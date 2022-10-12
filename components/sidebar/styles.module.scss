@@ -1,0 +1,11 @@
+@import "../../sass/abstracts/variables";
+
+.container {
+  padding-left: 36px;
+  background-color: $color-white;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-weight: 400;
+  opacity: 0.2;
+}
