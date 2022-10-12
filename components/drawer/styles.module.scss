@@ -1,0 +1,13 @@
+.container {
+  width: 450px;
+  padding: 10px 36px;
+}
+.header {
+  height: 60px;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  & > h2 {
+    font-size: 18px;
+  }
+}

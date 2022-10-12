@@ -1,0 +1,14 @@
+.container {
+  width: 100%;
+  padding: 26px 36px 26px 0;
+  display: grid;
+  grid-template-columns: 1fr 45%;
+  gap: 26px;
+}
+.content {
+  max-height: 85vh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

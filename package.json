@@ -1,5 +1,5 @@
 {
-  "name": "hoten",
+  "name": "hotel-ranking",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,16 +9,43 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@carbon/icons": "^11.9.0",
+    "@carbon/icons-react": "^11.9.0",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/lab": "^5.0.0-alpha.103",
+    "@mui/material": "^5.10.8",
+    "@react-google-maps/api": "^2.13.1",
+    "@reduxjs/toolkit": "^1.8.6",
+    "@types/google-map-react": "^2.1.7",
+    "@types/react-simple-maps": "^1.0.8",
+    "axios": "^1.1.2",
+    "formik": "^2.2.9",
+    "google-map-react": "^2.2.0",
+    "mapbox-gl": "^2.10.0",
     "next": "12.3.1",
+    "next-redux-wrapper": "^8.0.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-map-gl": "^7.0.19",
+    "react-places-autocomplete": "^7.3.0",
+    "react-redux": "^8.0.4",
+    "react-simple-maps": "^3.0.0",
+    "redux-persist": "^6.0.0",
+    "sass": "^1.55.0",
+    "uuidv4": "^6.2.13",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@types/carbon__icons-react": "^11.8.0",
     "@types/node": "18.8.3",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
+    "@types/react-places-autocomplete": "^7.2.9",
+    "@types/redux-persist": "^4.3.1",
     "eslint": "8.25.0",
     "eslint-config-next": "12.3.1",
-    "typescript": "4.8.4"
+    "typescript": "4.8.4",
+    "webworkify-webpack": "1.0.6"
   }
 }
