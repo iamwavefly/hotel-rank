@@ -24,13 +24,13 @@ export default function (state = initialState, action: ActionProps) {
   const { payload } = action;
   switch (action.type) {
     case TOGGLE_DRAWAL:
-      return { drawalOpen: payload };
+      return { ...state, drawalOpen: payload };
     case EDIT_PROPERTY:
-      return { onContentEdit: payload };
+      return { ...state, onContentEdit: payload };
     case UPDATE_SEARCH_TERM:
-      return { searchText: payload };
+      return { ...state, searchText: payload };
     case UPDATE_GEOCODE:
-      return { selectedGeoCode: payload };
+      return { ...state, selectedGeoCode: payload };
     default:
       return state;
   }

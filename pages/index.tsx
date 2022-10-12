@@ -5,15 +5,16 @@ import ListWrapper from "../components/Listing/listWrapper";
 import MainLayout from "../layouts/main/mainLayout";
 import { connect } from "react-redux";
 import { useEffect } from "react";
-import { AppProps, PropertyProps } from "../interfaces/main";
+import { AppProps, ContentEditProps, PropertyProps } from "../interfaces/main";
 import { setProperty, deleteProperty } from "../store/actions/properties";
-import { toggleDrawer } from "../store/actions/app";
+import { toggleDrawer, editProperty } from "../store/actions/app";
 import NewPropertyDrawer from "../components/drawer/newPropertyDrawer";
 
 interface HomePageProps {
   properties: PropertyProps[];
   app: AppProps;
   setProperty: (PropertyProps: PropertyProps) => void;
+  editProperty: (PropertyProps: ContentEditProps) => void;
   deleteProperty: (id: string) => void;
   toggleDrawer: () => void;
 }
@@ -23,6 +24,7 @@ const Home = ({
   setProperty,
   deleteProperty,
   toggleDrawer,
+  editProperty,
   app,
 }: HomePageProps) => {
   return (
@@ -42,6 +44,7 @@ const Home = ({
         deleteProperty={deleteProperty}
         properties={properties}
         toggleDrawer={toggleDrawer}
+        editProperty={editProperty}
         app={app}
       />
     </div>
@@ -58,5 +61,5 @@ export default connect(
     properties: state.properties,
     app: state.app,
   }),
-  { setProperty, toggleDrawer, deleteProperty }
+  { setProperty, toggleDrawer, deleteProperty, editProperty }
 )(Home);

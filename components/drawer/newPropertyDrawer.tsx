@@ -1,14 +1,5 @@
-import { useEffect, useState } from "react";
-import {
-  Drawer,
-  Box,
-  Divider,
-  List,
-  ListItem,
-  TextField,
-  MenuItem,
-  Grid,
-} from "@mui/material";
+import { useEffect, useState, useCallback } from "react";
+import { Drawer, Divider, TextField, MenuItem, Grid } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Typography } from "@mui/material";
 import { Stack } from "@mui/system";
@@ -26,13 +17,16 @@ import {
   ContentEditProps,
 } from "../../interfaces/main";
 import axios from "axios";
+import Head from "next/head";
 
+// hotel tags
 const tags = [
   { id: 1, name: "Limited" },
   { id: 2, name: "Exclusive" },
   { id: 3, name: "New House" },
 ];
 
+// hotel property types
 const propTypes = [
   { id: 1, name: "Apartment" },
   { id: 2, name: "Land" },
@@ -42,7 +36,8 @@ const propTypes = [
 interface drawelProps {
   app: AppProps;
   properties: PropertyProps[];
-  updateProperty: (PropertyProps: PropertyProps) => void;
+  updateProperty: (arg0: PropertyProps) => void;
+  editProperty: (arg0: ContentEditProps) => void;
   toggleDrawer: () => void;
   deleteProperty: (id: string) => void;
 }
@@ -51,6 +46,7 @@ export default function NewPropertyDrawer({
   app,
   properties,
   updateProperty,
+  editProperty,
   toggleDrawer,
   deleteProperty,
 }: drawelProps) {
@@ -69,6 +65,7 @@ export default function NewPropertyDrawer({
   const { drawalOpen, onContentEdit } = app;
 
   // ----- Hooks ----- //
+
   useEffect(() => {
     setEditContent(onContentEdit);
   }, [onContentEdit]);
@@ -114,7 +111,7 @@ export default function NewPropertyDrawer({
           id: uuid(),
         });
         setLoading(false);
-        toggleDrawer();
+        toggleDrawerHandler();
         resetForm();
       }, 3000);
     },
@@ -144,192 +141,217 @@ export default function NewPropertyDrawer({
     }
   };
 
+  // dynamic title
+  const DrawalTitle = () => {
+    const { init } = editContent;
+    if (init) {
+      return <>Update Hotel</>;
+    }
+    return <>List Your Hotel</>;
+  };
+
+  const toggleDrawerHandler = () => {
+    editProperty({ init: false, id: "" });
+    toggleDrawer();
+  };
+
   return (
-    <Drawer anchor="right" open={drawalOpen} onClose={toggleDrawer}>
-      <form onSubmit={formik.handleSubmit} className={Styles.container}>
-        <header className={Styles.header}>
-          <Typography component="h2">
-            {editContent?.init ? "Update Property" : "List Your Property"}
-          </Typography>
-        </header>
-        <Divider />
-        <Stack sx={{ mt: "26px" }} gap={2}>
-          <TextField
-            label="Property Name"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="name"
-            value={formik.values.name}
-            error={formik.touched.name && Boolean(formik.errors.name)}
-            helperText={formik.touched.name && formik.errors.name}
-          />
-          <PlacesAutocomplete
-            value={location.address}
-            onChange={autoCompleteAddresses}
-          >
-            {({
-              getInputProps,
-              suggestions,
-              getSuggestionItemProps,
-              loading,
-            }) => (
-              <div style={{ position: "relative" }}>
-                <TextField
-                  {...getInputProps({
-                    placeholder: "123 Johnson street...",
-                    label: "Address",
-                    onblur: formik.handleBlur,
-                    name: "address",
-                    error:
-                      formik.touched.address && Boolean(formik.errors.address),
-                    helperText: formik.touched.address && formik.errors.address,
-                  })}
-                />
-                {suggestions.length ? (
-                  <Grid className="suggestions-box">
-                    {loading && <div>Loading...</div>}
-                    {suggestions?.map((suggestion) => {
-                      return (
-                        <div
-                          className="suggestion-item"
-                          {...getSuggestionItemProps(suggestion, {})}
-                          key={suggestion.id}
-                        >
-                          {suggestion?.description?.length > 60
-                            ? suggestion?.description?.substring(0, 60) + "..."
-                            : suggestion?.description}
-                        </div>
-                      );
+    <>
+      <Head>
+        <script
+          defer
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_API_KEY}&v=3&libraries=geometry,places`}
+        ></script>
+      </Head>
+      <Drawer anchor="right" open={drawalOpen} onClose={toggleDrawerHandler}>
+        <form onSubmit={formik.handleSubmit} className={Styles.container}>
+          <header className={Styles.header}>
+            <Typography component="h2">
+              <DrawalTitle />
+            </Typography>
+          </header>
+          <Divider />
+          <Stack sx={{ mt: "26px" }} gap={2}>
+            <TextField
+              label="Property Name"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              name="name"
+              value={formik.values.name}
+              error={formik.touched.name && Boolean(formik.errors.name)}
+              helperText={formik.touched.name && formik.errors.name}
+            />
+            <PlacesAutocomplete
+              value={location.address}
+              onChange={autoCompleteAddresses}
+            >
+              {({
+                getInputProps,
+                suggestions,
+                getSuggestionItemProps,
+                loading,
+              }) => (
+                <div style={{ position: "relative" }}>
+                  <TextField
+                    {...getInputProps({
+                      placeholder: "123 Johnson street...",
+                      label: "Address",
+                      onblur: formik.handleBlur,
+                      name: "address",
+                      error:
+                        formik.touched.address &&
+                        Boolean(formik.errors.address),
+                      helperText:
+                        formik.touched.address && formik.errors.address,
                     })}
-                  </Grid>
-                ) : (
-                  ""
-                )}
-              </div>
-            )}
-          </PlacesAutocomplete>
-          <Stack direction="row" gap={2}>
+                  />
+                  {suggestions.length ? (
+                    <Grid className="suggestions-box">
+                      {loading && <div>Loading...</div>}
+                      {suggestions?.map((suggestion) => {
+                        return (
+                          <div
+                            className="suggestion-item"
+                            {...getSuggestionItemProps(suggestion, {})}
+                            key={suggestion.id}
+                          >
+                            {suggestion?.description?.length > 60
+                              ? suggestion?.description?.substring(0, 60) +
+                                "..."
+                              : suggestion?.description}
+                          </div>
+                        );
+                      })}
+                    </Grid>
+                  ) : (
+                    ""
+                  )}
+                </div>
+              )}
+            </PlacesAutocomplete>
+            <Stack direction="row" gap={2}>
+              <TextField
+                label="City"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                name="city"
+                value={formik.values.city}
+                error={formik.touched.city && Boolean(formik.errors.city)}
+                helperText={formik.touched.city && formik.errors.city}
+              />
+              <TextField
+                label="Country"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                name="country"
+                value={formik.values.country}
+                error={formik.touched.country && Boolean(formik.errors.country)}
+                helperText={formik.touched.country && formik.errors.country}
+              />
+            </Stack>
             <TextField
-              label="City"
+              label="Property Tag"
+              select
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              name="city"
-              value={formik.values.city}
-              error={formik.touched.city && Boolean(formik.errors.city)}
-              helperText={formik.touched.city && formik.errors.city}
-            />
+              name="tag"
+              value={formik.values.tag}
+              error={formik.touched.tag && Boolean(formik.errors.tag)}
+              helperText={formik.touched.tag && formik.errors.tag}
+            >
+              {tags?.map((tag) => (
+                <MenuItem key={tag?.id} value={tag?.name?.toLowerCase()}>
+                  {tag?.name}
+                </MenuItem>
+              ))}
+            </TextField>
             <TextField
-              label="Country"
+              label="Property Type"
+              select
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              name="country"
-              value={formik.values.country}
-              error={formik.touched.country && Boolean(formik.errors.country)}
-              helperText={formik.touched.country && formik.errors.country}
+              name="type"
+              value={formik.values.type}
+              error={formik.touched.type && Boolean(formik.errors.type)}
+              helperText={formik.touched.type && formik.errors.type}
+            >
+              {propTypes?.map((prop) => (
+                <MenuItem key={prop?.id} value={prop?.name}>
+                  {prop?.name}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              label="Price"
+              type="number"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              name="price"
+              value={formik.values.price}
+              error={formik.touched.price && Boolean(formik.errors.price)}
+              helperText={formik.touched.price && formik.errors.price}
             />
+            <TextField
+              label="Discount"
+              type="number"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              name="discount"
+              value={formik.values.discount}
+              error={formik.touched.discount && Boolean(formik.errors.discount)}
+              helperText={formik.touched.discount && formik.errors.discount}
+            />
+            <TextField
+              label="Rooms"
+              type="number"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              name="rooms"
+              value={formik.values.rooms}
+              error={formik.touched.rooms && Boolean(formik.errors.rooms)}
+              helperText={formik.touched.rooms && formik.errors.rooms}
+            />
+            <TextField
+              label="Toilets"
+              type="number"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              name="toilets"
+              value={formik.values.toilets}
+              error={formik.touched.toilets && Boolean(formik.errors.toilets)}
+              helperText={formik.touched.toilets && formik.errors.toilets}
+            />
+            <TextField
+              label="Property Age"
+              type="number"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              name="age"
+              value={formik.values.age}
+              error={formik.touched.age && Boolean(formik.errors.age)}
+              helperText={formik.touched.age && formik.errors.age}
+            />
+            <TextField
+              label="Parking"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              name="parking"
+              value={formik.values.parking}
+              error={formik.touched.parking && Boolean(formik.errors.parking)}
+              helperText={formik.touched.parking && formik.errors.parking}
+            />
+            <LoadingButton
+              sx={{ my: "16px" }}
+              variant="contained"
+              type="submit"
+              loading={loading}
+              disabled={!(formik.isValid && formik.dirty)}
+            >
+              {editContent?.init ? "Update Hotel" : "Submit Hotel"}
+            </LoadingButton>
           </Stack>
-          <TextField
-            label="Property Tag"
-            select
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="tag"
-            value={formik.values.tag}
-            error={formik.touched.tag && Boolean(formik.errors.tag)}
-            helperText={formik.touched.tag && formik.errors.tag}
-          >
-            {tags?.map((tag) => (
-              <MenuItem key={tag?.id} value={tag?.name?.toLowerCase()}>
-                {tag?.name}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            label="Property Type"
-            select
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="type"
-            value={formik.values.type}
-            error={formik.touched.type && Boolean(formik.errors.type)}
-            helperText={formik.touched.type && formik.errors.type}
-          >
-            {propTypes?.map((prop) => (
-              <MenuItem key={prop?.id} value={prop?.name}>
-                {prop?.name}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            label="Price"
-            type="number"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="price"
-            value={formik.values.price}
-            error={formik.touched.price && Boolean(formik.errors.price)}
-            helperText={formik.touched.price && formik.errors.price}
-          />
-          <TextField
-            label="Discount"
-            type="number"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="discount"
-            value={formik.values.discount}
-            error={formik.touched.discount && Boolean(formik.errors.discount)}
-            helperText={formik.touched.discount && formik.errors.discount}
-          />
-          <TextField
-            label="Rooms"
-            type="number"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="rooms"
-            value={formik.values.rooms}
-            error={formik.touched.rooms && Boolean(formik.errors.rooms)}
-            helperText={formik.touched.rooms && formik.errors.rooms}
-          />
-          <TextField
-            label="Toilets"
-            type="number"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="toilets"
-            value={formik.values.toilets}
-            error={formik.touched.toilets && Boolean(formik.errors.toilets)}
-            helperText={formik.touched.toilets && formik.errors.toilets}
-          />
-          <TextField
-            label="Property Age"
-            type="number"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="age"
-            value={formik.values.age}
-            error={formik.touched.age && Boolean(formik.errors.age)}
-            helperText={formik.touched.age && formik.errors.age}
-          />
-          <TextField
-            label="Parking"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            name="parking"
-            value={formik.values.parking}
-            error={formik.touched.parking && Boolean(formik.errors.parking)}
-            helperText={formik.touched.parking && formik.errors.parking}
-          />
-          <LoadingButton
-            sx={{ my: "16px" }}
-            variant="contained"
-            type="submit"
-            loading={loading}
-            disabled={!(formik.isValid && formik.dirty)}
-          >
-            {editContent?.init ? "Update Property" : "Submit Property"}
-          </LoadingButton>
-        </Stack>
-      </form>
-    </Drawer>
+        </form>
+      </Drawer>
+    </>
   );
 }

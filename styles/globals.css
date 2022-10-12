@@ -94,7 +94,9 @@ fieldset {
   margin-top: 8px;
 }
 .no-content-container > p > span {
-  background-color: rgba(167, 0, 36, 0.05);
+  background-color: rgb(167, 0, 36);
+  color: #fff;
+  font-size: 13px;
   padding: 2px 5px;
   border-radius: 5px;
 }
