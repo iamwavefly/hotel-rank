@@ -29,16 +29,11 @@ const Home = ({
 }: HomePageProps) => {
   return (
     <div>
-      <Head>
-        <title>Listing - Hotel Ranking</title>
-      </Head>
-      <MainLayout>
-        <ListWrapper
-          searchTerm={app.searchText}
-          properties={properties}
-          deleteProperty={deleteProperty}
-        />
-      </MainLayout>
+      <ListWrapper
+        searchTerm={app.searchText}
+        properties={properties}
+        deleteProperty={deleteProperty}
+      />
       <NewPropertyDrawer
         updateProperty={setProperty}
         deleteProperty={deleteProperty}

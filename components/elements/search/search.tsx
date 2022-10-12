@@ -1,4 +1,9 @@
-import { Autocomplete, InputAdornment, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  InputAdornment,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import { connect } from "react-redux";
 import Styles from "./styles.module.scss";
 import { Search as SearchIcon } from "@carbon/icons-react";
