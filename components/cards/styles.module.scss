@@ -3,7 +3,8 @@
 .container {
   position: relative;
   background-color: $color-white;
-  height: 168px;
+  height: auto;
+  min-height: 168px;
   padding: 16px;
   border-radius: 10px;
   cursor: pointer;
@@ -105,5 +106,14 @@
         font-size: 12px;
       }
     }
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  .content {
+    margin-top: 16px;
   }
 }
