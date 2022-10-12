@@ -59,6 +59,7 @@ const Search = ({ properties, updateSearchTerm }: SearchProps) => {
         }}
         renderInput={(params) => (
           <TextField
+            focused
             variant="outlined"
             placeholder="City, neighboarhood or address"
             {...params}

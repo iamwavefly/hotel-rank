@@ -23,7 +23,7 @@ export default function MainHeader({
         variant="text"
       >
         <Add size={20} />
-        <span>List Your Property</span>
+        <span>List Your Hotel</span>
       </Button>
     </div>
   );

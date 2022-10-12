@@ -4,6 +4,7 @@ import {
   Marker,
   InfoWindow,
   LoadScript,
+  useLoadScript,
 } from "@react-google-maps/api";
 import { connect } from "react-redux";
 import Styles from "./styles.module.scss";
@@ -55,6 +56,14 @@ const HoMap = ({ geocode }: HoMapProps) => {
     markers.forEach(({ position }) => bounds.extend(position));
     map.fitBounds(bounds);
   };
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_API_KEY as string, // Add your API key
+  });
+
+  if (!isLoaded) {
+    return <div>Loading</div>;
+  }
 
   return (
     <div className={Styles.container}>

@@ -6,7 +6,6 @@ import { toggleDrawer } from "../../store/actions/app";
 import { AppProps, PropertyProps } from "../../interfaces/main";
 import Styles from "./styles.module.scss";
 import Head from "next/head";
-import { useLoadScript } from "@react-google-maps/api";
 import NoContent from "../../components/placeholder/noContent";
 
 interface LayoutProps {
@@ -16,21 +15,8 @@ interface LayoutProps {
 }
 
 const MainLayout = ({ children, toggleDrawer, properties }: LayoutProps) => {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_API_KEY as string, // Add your API key
-  });
-
-  if (!isLoaded) {
-    return <div>loading</div>;
-  }
   return (
     <>
-      <Head>
-        <script
-          defer
-          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_API_KEY}&v=3&libraries=geometry,places`}
-        ></script>
-      </Head>
       <div className={Styles.container}>
         <MainSidebar />
         <MainHeader toggleDrawer={toggleDrawer} />
