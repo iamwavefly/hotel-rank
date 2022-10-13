@@ -7,6 +7,7 @@ import { AppProps, PropertyProps } from "../../interfaces/main";
 import Styles from "./styles.module.scss";
 import Head from "next/head";
 import NoContent from "../../components/placeholder/noContent";
+import HeadContent from "../../components/_app/headContent";
 
 interface LayoutProps {
   children: ReactNode;
@@ -17,6 +18,7 @@ interface LayoutProps {
 const MainLayout = ({ children, toggleDrawer, properties }: LayoutProps) => {
   return (
     <>
+      <Head>{HeadContent()}</Head>
       <div className={Styles.container}>
         <MainSidebar />
         <MainHeader toggleDrawer={toggleDrawer} />

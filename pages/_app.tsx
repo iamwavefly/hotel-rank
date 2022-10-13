@@ -8,6 +8,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "../store";
+import MainLayout from "../layouts/main/mainLayout";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -15,7 +16,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <Component {...pageProps} />
+            <MainLayout {...pageProps}>
+              <Component {...pageProps} />
+            </MainLayout>
           </PersistGate>
         </Provider>
       </ThemeProvider>
